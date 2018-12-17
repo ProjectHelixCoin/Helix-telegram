@@ -15,12 +15,12 @@ import logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 					level=logging.INFO)
 
-def commands(bot, update):
+def help(bot, update):
 	user = update.message.from_user.username 
 	bot.send_message(chat_id=update.message.chat_id, text="Initiating commands /tip & /withdraw have a specfic format,\n use them like so:" + "\n \n Parameters: \n <user> = target user to tip \n <amount> = amount of helix to utilise \n <address> = helix address to withdraw to \n \n Tipping format: \n /tip <user> <amount> \n \n Withdrawing format: \n /withdraw <address> <amount>")
 
-def help(bot, update):
-	bot.send_message(chat_id=update.message.chat_id, text="The following commands are at your disposal: /hi , /commands , /deposit , /tip , /withdraw , /price , /marketcap or /balance")
+def commands(bot, update):
+	bot.send_message(chat_id=update.message.chat_id, text="The following commands are at your disposal: /help , /commands , /deposit , /tip , /withdraw , /price , /marketcap or /balance")
 
 def deposit(bot, update):
 	user = update.message.from_user.username
@@ -121,13 +121,6 @@ def withdraw(bot,update):
 			tx = subprocess.run([core,"sendfrom",user,address,amount],stdout=subprocess.PIPE)
 			bot.send_message(chat_id=update.message.chat_id, text="@{0} has successfully withdrew to address: {1} of {2} HLIX" .format(user,address,amount))
 
-def hi(bot,update):
-	user = update.message.from_user.username
-	bot.send_message(chat_id=update.message.chat_id, text="Hello @{0}, how are you doing today?".format(user))
-
-def moon(bot,update):
-  bot.send_message(chat_id=update.message.chat_id, text="Moon mission inbound!")
-
 def marketcap(bot,update):
 	quote_page = requests.get('https://www.worldcoinindex.com/coin/helix')
 	strainer = SoupStrainer('div', attrs={'class': 'row mob-coin-table'})
@@ -141,12 +134,6 @@ from telegram.ext import CommandHandler
 
 commands_handler = CommandHandler('commands', commands)
 dispatcher.add_handler(commands_handler)
-
-moon_handler = CommandHandler('moon', moon)
-dispatcher.add_handler(moon_handler)
-
-hi_handler = CommandHandler('hi', hi)
-dispatcher.add_handler(hi_handler)
 
 withdraw_handler = CommandHandler('withdraw', withdraw)
 dispatcher.add_handler(withdraw_handler)
