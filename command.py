@@ -8,7 +8,7 @@ from telegram.ext.dispatcher import run_async
 from telegram.ext import Updater
 from html import escape
 
-updater = Updater(token='BOT_TOKEN')
+updater = Updater(token='')
 dispatcher = updater.dispatcher
 
 import logging
@@ -17,10 +17,10 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 def help(bot, update):
 	user = update.message.from_user.username 
-	bot.send_message(chat_id=update.message.chat_id, text="Initiating commands /tip & /withdraw have a specfic format,\n use them like so:" + "\n \n Parameters: \n <user> = target user to tip \n <amount> = amount of helix to utilise \n <address> = helix address to withdraw to \n \n Tipping format: \n /tip <user> <amount> \n \n Withdrawing format: \n /withdraw <address> <amount>")
+	bot.send_message(chat_id=update.message.chat_id, text="Initiating command /tip & /withdraw have a specfic format,\n use them like so:" + "\n \n Parameters: \n <user> = target user to tip \n <amount> = amount of helix to utilise \n <address> = helix address to withdraw to \n \n Tipping format: \n /tip <user> <amount> \n \n Withdrawing format: \n /withdraw <address> <amount>")
 
 def commands(bot, update):
-	bot.send_message(chat_id=update.message.chat_id, text="The following commands are at your disposal: /help , /commands , /deposit , /tip , /withdraw , /price , /marketcap or /balance")
+	bot.send_message(chat_id=update.message.chat_id, text="The following commands are at your disposal: /hi , /commands , /deposit , /tip , /withdraw , /price , /marketcap or /balance")
 
 def deposit(bot, update):
 	user = update.message.from_user.username
@@ -94,10 +94,10 @@ def price(bot,update):
 	fiat = soup.find('span', attrs={'class': ''})
 	kkz = fiat.text.replace("\n","")
 	percent = re.sub(r'\n\s*\n', r'\n\n', kkz.strip(), flags=re.M)
-	quote_page = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=helix&vs_currencies=btc')
+	quote_page = requests.get('https://api.crex24.com/v2/public/tickers?instrument=HLIX-BTC')
 	soup = BeautifulSoup(quote_page.content, 'html.parser').text
-	btc = soup[80:]
-	sats = btc[:-2]
+	btc = soup[50:]
+	sats = btc[:-329]
 	bot.send_message(chat_id=update.message.chat_id, text="Helix is valued at {0} Δ {1} ≈ {2}".format(price,percent,sats) + " ฿")
 
 def withdraw(bot,update):
@@ -121,19 +121,30 @@ def withdraw(bot,update):
 			tx = subprocess.run([core,"sendfrom",user,address,amount],stdout=subprocess.PIPE)
 			bot.send_message(chat_id=update.message.chat_id, text="@{0} has successfully withdrew to address: {1} of {2} HLIX" .format(user,address,amount))
 
+def hi(bot,update):
+	user = update.message.from_user.username
+	bot.send_message(chat_id=update.message.chat_id, text="Hello @{0}, how are you doing today?".format(user))
+
+def moon(bot,update):
+  bot.send_message(chat_id=update.message.chat_id, text="Moon mission inbound!")
+
 def marketcap(bot,update):
-	quote_page = requests.get('https://www.worldcoinindex.com/coin/helix')
-	strainer = SoupStrainer('div', attrs={'class': 'row mob-coin-table'})
-	soup = BeautifulSoup(quote_page.content, 'html.parser', parse_only=strainer)
-	name_box = soup.find('div', attrs={'class':'col-md-6 col-xs-6 coin-marketcap'})
-	name = name_box.text.replace("\n","")
-	mc = re.sub(r'\n\s*\n', r'\n\n', name.strip(), flags=re.M)
-	bot.send_message(chat_id=update.message.chat_id, text="The current market cap of helix is valued at {0}".format(mc))
+	quote_page = requests.get('https://api.coingecko.com/api/v3/coins/helix?tickers=false&community_data=false&developer_data=false&sparkline=false')
+	soup = BeautifulSoup(quote_page.content, 'html.parser').text
+	usd = soup[10300:]
+	cent = usd[:-16032]
+	bot.send_message(chat_id=update.message.chat_id, text="The current market cap of helix is valued at ${0}".format(cent))
 
 from telegram.ext import CommandHandler
 
 commands_handler = CommandHandler('commands', commands)
 dispatcher.add_handler(commands_handler)
+
+moon_handler = CommandHandler('moon', moon)
+dispatcher.add_handler(moon_handler)
+
+hi_handler = CommandHandler('hi', hi)
+dispatcher.add_handler(hi_handler)
 
 withdraw_handler = CommandHandler('withdraw', withdraw)
 dispatcher.add_handler(withdraw_handler)
