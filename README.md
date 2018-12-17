@@ -1,6 +1,6 @@
-# Reddbot - Telegram Reddcoin Tipbot.
+# Helix - Telegram Tipbot.
  
-#### Reddcoin crypto currency tipbot for [Telegram](https://telegram.org)
+#### Helix crypto currency tipbot for [Telegram](https://telegram.org)
 
 
 ## Dependencies 
@@ -10,7 +10,7 @@
 *  `pip3 install beautifulsoup4`
 *  `pip3 install python-telegram-bot --upgrade`
 
-* In order to run the tip-bot effectively, a Bitcoin-core based client is needed. For this git Reddcoin-Core is used , but any major alternate crypto-currency client could easily be incorperated. 
+* In order to run the tip-bot effectively, a Bitcoin-core based client is needed. For this git Helix-Core is used , but any major alternate crypto-currency client could easily be incorperated. 
 
 ## Setup
 
