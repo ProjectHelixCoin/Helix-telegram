@@ -1,12 +1,12 @@
 import json
 import codecs
 import requests
-from bs4 import BeautifulSoup, SoupStrainer
 import re
 import subprocess
 from telegram.ext.dispatcher import run_async
 from telegram.ext import Updater
 from html import escape
+import time
 
 updater = Updater(token='')
 dispatcher = updater.dispatcher
@@ -26,7 +26,7 @@ def help(bot, update):
 	helpmessage += "`\t\t\t\t/hwithdraw HLIXWITHDRAWADDRESS amount`\n"
 	helpmessage += "`\thbalance - allows you to check your HLIX balance:`\n"
 	helpmessage += "`\t\t\t\t/hbalance`\n"
-	helpmessage += "`\hqprice - allows you to check the current HLIX price:`\n"
+	helpmessage += "`\thprice - allows you to check the current HLIX price:`\n"
 	helpmessage += "`\t\t\t\t/hprice`\n"
 	helpmessage += "`\thmarketcap - allows your to check the current HLIX Market Cap:`\n"
 	helpmessage += "`\t\t\t\t/hmarketcap`\n"
