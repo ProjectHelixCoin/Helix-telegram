@@ -137,34 +137,34 @@ def marketcap(bot,update):
 
 from telegram.ext import CommandHandler
 
-commands_handler = CommandHandler('commands', commands)
+commands_handler = CommandHandler('hcommands', commands)
 dispatcher.add_handler(commands_handler)
 
-moon_handler = CommandHandler('moon', moon)
+moon_handler = CommandHandler('hmoon', moon)
 dispatcher.add_handler(moon_handler)
 
 hi_handler = CommandHandler('hi', hi)
 dispatcher.add_handler(hi_handler)
 
-withdraw_handler = CommandHandler('withdraw', withdraw)
+withdraw_handler = CommandHandler('hwithdraw', withdraw)
 dispatcher.add_handler(withdraw_handler)
 
-marketcap_handler = CommandHandler('marketcap', marketcap)
+marketcap_handler = CommandHandler('hmarketcap', marketcap)
 dispatcher.add_handler(marketcap_handler)
 
-deposit_handler = CommandHandler('deposit', deposit)
+deposit_handler = CommandHandler('hdeposit', deposit)
 dispatcher.add_handler(deposit_handler)
 
-price_handler = CommandHandler('price', price)
+price_handler = CommandHandler('hprice', price)
 dispatcher.add_handler(price_handler)
 
-tip_handler = CommandHandler('tip', tip)
+tip_handler = CommandHandler('htip', tip)
 dispatcher.add_handler(tip_handler)
 
-balance_handler = CommandHandler('balance', balance)
+balance_handler = CommandHandler('hbalance', balance)
 dispatcher.add_handler(balance_handler)
 
-help_handler = CommandHandler('help', help)
+help_handler = CommandHandler('hhelp', help)
 dispatcher.add_handler(help_handler)
 
 updater.start_polling()
