@@ -109,6 +109,66 @@ def tip(bot,update):
 			bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
 			bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
 
+def tipusd(bot,update):
+	msg=bot.send_message(chat_id=update.message.chat_id, text="Retrieving Helix Market Data")
+	r = requests.get('https://api.coingecko.com/api/v3/coins/helix?tickers=false&community_data=false&developer_data=false&sparkline=false')
+	cgapi = json.loads(r.content.decode())
+	usd=cgapi['market_data']['current_price']['usd']
+	price=float(usd)
+	bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+	user = update.message.from_user.username
+	command=update.message.text.split()
+	amountusd =  float(command[2])
+	amount = float(amountusd) / float(price)
+	target =  command[1]
+	if user is None:
+		msg=bot.send_message(chat_id=update.message.chat_id, text="Please set a telegram username in your profile settings!")
+		time.sleep(5)
+		bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+		bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+	else:
+		machine = "@Helix_crypto_bot"
+		if target == machine:
+			bot.send_message(chat_id=update.message.chat_id, text="HODL.")
+		elif "@" in target:
+			target = target[1:]
+			user = update.message.from_user.username
+			core = "/usr/local/bin/helix-cli"
+			result = subprocess.run([core,"getbalance",user],stdout=subprocess.PIPE)
+			balance = float((result.stdout.strip()).decode("utf-8"))
+			amount = round(float(amount),8)
+			if balance < amount:
+				msg=bot.send_message(chat_id=update.message.chat_id, text="@{0} you have insufficent funds.".format(user))
+				time.sleep(5)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+			elif amount < 0:
+				msg=bot.send_message(chat_id=update.message.chat_id, text="You can't tip a negative amount, silly.")
+				time.sleep(5)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+			elif amount < 0.00000001:
+				msg=bot.send_message(chat_id=update.message.chat_id, text="You can't tip less than 0.00000001.")
+				time.sleep(5)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+			elif target == user:
+				msg=bot.send_message(chat_id=update.message.chat_id, text="You can't tip yourself, silly.")
+				time.sleep(5)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+				bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+			else:
+				balance = str(balance)
+				amount = str(amount)
+				tx = subprocess.run([core,"move",user,target,amount],stdout=subprocess.PIPE)
+				bot.send_message(chat_id=update.message.chat_id, text="@{0} tipped @{1} ${3:.8f} USD ({2:.8f} HLIX)".format(user, target, float(amount), amountusd))
+				bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+		else:
+			msg=bot.send_message(chat_id=update.message.chat_id, text="Error that user is not applicable.")
+			time.sleep(5)
+			bot.delete_message(chat_id=update.message.chat_id, message_id=msg.message_id)
+			bot.delete_message(chat_id=update.message.chat_id, message_id=update.message.message_id)
+
 @run_async
 def balance(bot,update):
 	msg=bot.send_message(chat_id=update.message.chat_id, text="Retrieving Helix Market Data")
@@ -226,6 +286,9 @@ dispatcher.add_handler(price_handler)
 tip_handler = CommandHandler('htip', tip)
 dispatcher.add_handler(tip_handler)
 
+tip_handler = CommandHandler('htipusd', tipusd)
+dispatcher.add_handler(tip_handler)
+
 balance_handler = CommandHandler('hbalance', balance)
 dispatcher.add_handler(balance_handler)
 
@@ -233,4 +296,3 @@ help_handler = CommandHandler('hhelp', help)
 dispatcher.add_handler(help_handler)
 
 updater.start_polling()
-
