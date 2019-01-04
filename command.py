@@ -22,7 +22,7 @@ def help(bot, update):
 	helpmessage += "`\t\t\t\t/hdeposit`\n"
 	helpmessage += "`\thtip - allows you to tip another user in HLIX:`\n"
 	helpmessage += "`\t\t\t\t/htip @user HLIXamount`\n"
-	helpmessage += "`\thtip - allows you to tip another user in USD:`\n"
+	helpmessage += "`\thtipusd - allows you to tip another user in USD:`\n"
 	helpmessage += "`\t\t\t\t/htipusd @user USDamount`\n"
 	helpmessage += "`\thwithdraw - allows you to withdraw HLIX:`\n"
 	helpmessage += "`\t\t\t\t/hwithdraw HLIXWITHDRAWADDRESS amount`\n"
